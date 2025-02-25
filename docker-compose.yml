@@ -1,0 +1,36 @@
+services:
+  postgres:
+    image: postgres:latest
+    container_name: psql-whatsapp-clone
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: password
+      PGDATA: /var/lib/postgresql/data
+      POSTGRES_DB: whatsapp_clone
+    volumes:
+      - postgres:/data/postgres
+    ports:
+      - 54321:5432
+    networks:
+      - whatsapp-clone
+    restart: unless-stopped
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.0.0
+    container_name: keycloak-whatsapp-clone
+    ports:
+      - 9090:8080
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    networks:
+      - whatsapp-clone
+    command:
+      - "start-dev"
+
+volumes:
+  postgres:
+    driver: local
+
+networks:
+  whatsapp-clone:
+    driver: bridge
