@@ -15,7 +15,7 @@ services:
       - whatsapp-clone
     restart: unless-stopped
   keycloak:
-    image: quay.io/keycloak/keycloak:26.0.0
+    image: quay.io/keycloak/keycloak:26.1.2
     container_name: keycloak-whatsapp-clone
     ports:
       - 9090:8080
