@@ -6,8 +6,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
-import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -19,21 +19,13 @@ public class UserSynchronizer {
 
     public void synchronizeWithIDP(Jwt jwt) {
         log.info("Synchronizing user with idp");
-        getUserEmail(jwt).ifPresent(email -> {
+        String email = jwt.getClaims().get("email").toString();
+        if (StringUtils.hasText(email)) {
             log.info("Synchronizing user having email: {}", email);
-            //Optional<User> optionalUser = userRepository.findByEmail(email);
-            User user = userMapper.fromTokenAttributes(jwt.getClaims());
-            //optionalUser.ifPresent(value -> user.setId(optionalUser.get().getId()));
-            userRepository.save(user);
-        });
-    }
-
-
-    private Optional<String> getUserEmail(Jwt jwt) {
-        Map<String, Object> attributes = jwt.getClaims();
-        if (attributes.containsKey("email")) {
-            return Optional.of(attributes.get("email").toString());
+            Optional<User> optionalUser = userRepository.findByEmail(email);
+            User user = optionalUser.orElseGet(User::new);
+            userRepository.save(userMapper.fromTokenAttributes(user, jwt.getClaims()));
         }
-        return Optional.empty();
+
     }
 }

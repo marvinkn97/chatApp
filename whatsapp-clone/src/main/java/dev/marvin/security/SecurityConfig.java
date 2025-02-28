@@ -3,7 +3,6 @@ package dev.marvin.security;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -17,6 +16,7 @@ import java.util.List;
 @Configuration
 @EnableMethodSecurity
 public class SecurityConfig {
+    private CustomJwtAuthenticationConverter customJwtAuthenticationConverter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
@@ -37,7 +37,7 @@ public class SecurityConfig {
                                 .anyRequest()
                                 .authenticated()
                 ).oauth2ResourceServer(c ->
-                        c.jwt(j -> j.jwtAuthenticationConverter(new CustomJwtAuthenticationConverter())));
+                        c.jwt(j -> j.jwtAuthenticationConverter(customJwtAuthenticationConverter)));
 
         return httpSecurity.build();
     }

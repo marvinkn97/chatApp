@@ -6,25 +6,16 @@ import java.time.LocalDateTime;
 import java.util.Map;
 
 public class UserMapper {
-    public User fromTokenAttributes(Map<String, Object> attributes) {
-        User user = new User();
-        if (attributes.containsKey("sub")) {
-            user.setId(attributes.get("sub").toString());
-        }
+    public User fromTokenAttributes(User user, Map<String, Object> attributes) {
+        user.setId((String) attributes.getOrDefault("sub", user.getId()));
 
-        if (attributes.containsKey("given_name")) {
-            user.setFirstName(attributes.get("given_name").toString());
-        } else if (attributes.containsKey("nickname")) {
-            user.setFirstName(attributes.get("nickname").toString());
-        }
+        user.setFirstName((String) attributes.getOrDefault("given_name",
+                attributes.getOrDefault("nickname", user.getFirstName())));
 
-        if (attributes.containsKey("family_name")) {
-            user.setLastName(attributes.get("family_name").toString());
-        }
+        user.setLastName((String) attributes.getOrDefault("family_name", user.getLastName()));
 
-        if (attributes.containsKey("email")) {
-            user.setLastName(attributes.get("email").toString());
-        }
+        user.setEmail((String) attributes.getOrDefault("email", user.getEmail()));
+
         user.setLastSeen(LocalDateTime.now());
         return user;
     }

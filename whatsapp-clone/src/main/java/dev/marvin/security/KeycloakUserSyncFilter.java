@@ -16,14 +16,15 @@ import java.io.IOException;
 
 @Component
 @RequiredArgsConstructor
-public class UserSynchronizerFilter extends OncePerRequestFilter {
+public class KeycloakUserSyncFilter extends OncePerRequestFilter {
     private final UserSynchronizer userSynchronizer;
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
-        if(!(SecurityContextHolder.getContext().getAuthentication() instanceof AnonymousAuthenticationToken)){
+        if (!(SecurityContextHolder.getContext().getAuthentication() instanceof AnonymousAuthenticationToken)) {
             JwtAuthenticationToken token = (JwtAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
             userSynchronizer.synchronizeWithIDP(token.getToken());
+            filterChain.doFilter(request, response);
         }
     }
 }

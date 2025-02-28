@@ -19,7 +19,7 @@ import java.util.List;
 public class User extends BaseAuditingEntity {
     private static final int LAST_ACTIVE_INTERVAL = 5;
     @Id
-    private String id;
+    private String id;   ////keycloak id
     private String firstName;
     private String lastName;
     private String email;
