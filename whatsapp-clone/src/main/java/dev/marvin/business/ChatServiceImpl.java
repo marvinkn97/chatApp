@@ -34,6 +34,7 @@ public class ChatServiceImpl implements ChatService {
                 .toList();
     }
 
+    @Transactional
     @Override
     public String createChat(String senderId, String receiverId) {
         log.info("Inside createChat method of ChatServiceImpl");
