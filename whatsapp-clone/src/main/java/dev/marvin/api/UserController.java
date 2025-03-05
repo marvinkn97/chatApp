@@ -3,6 +3,7 @@ package dev.marvin.api;
 import dev.marvin.business.UserService;
 import dev.marvin.domain.response.ResponseDTO;
 import dev.marvin.domain.response.UserResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ import java.util.List;
 @RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
 @Slf4j
+@Tag(name = "User Resource")
 public class UserController {
     private final UserService userService;
 

@@ -24,7 +24,8 @@ public class KeycloakUserSyncFilter extends OncePerRequestFilter {
         if (!(SecurityContextHolder.getContext().getAuthentication() instanceof AnonymousAuthenticationToken)) {
             JwtAuthenticationToken token = (JwtAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
             userSynchronizer.synchronizeWithIDP(token.getToken());
-            filterChain.doFilter(request, response);
         }
+
+        filterChain.doFilter(request, response);
     }
 }

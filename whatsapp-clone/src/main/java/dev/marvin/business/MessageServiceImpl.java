@@ -7,9 +7,12 @@ import dev.marvin.domain.constants.MessageState;
 import dev.marvin.domain.constants.MessageType;
 import dev.marvin.domain.model.Chat;
 import dev.marvin.domain.model.Message;
+import dev.marvin.domain.model.Notification;
+import dev.marvin.domain.model.NotificationType;
 import dev.marvin.domain.request.MessageRequest;
 import dev.marvin.domain.response.MessageResponse;
 import dev.marvin.errorhandling.ResourceNotFoundException;
+import dev.marvin.utils.FileUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -26,6 +29,7 @@ public class MessageServiceImpl implements MessageService {
     private final MessageRepository messageRepository;
     private final ChatRepository chatRepository;
     private final FileService fileService;
+    private final NotificationService notificationService;
 
     @Transactional
     @Override
@@ -44,7 +48,17 @@ public class MessageServiceImpl implements MessageService {
 
         messageRepository.save(message);
 
-        //TODO: Notification
+        Notification notification = Notification.builder()
+                .chatId(chat.getId())
+                .messageType(messageRequest.getMessageType())
+                .senderId(messageRequest.getSenderId())
+                .receiverId(messageRequest.getReceiverId())
+                .content(messageRequest.getContent())
+                .chatName(chat.getChatName(messageRequest.getSenderId()))
+                .notificationType(NotificationType.MESSAGE)
+                .build();
+
+        notificationService.sendNotification(message.getReceiverId(), notification);
     }
 
     @Transactional(readOnly = true)
@@ -68,7 +82,14 @@ public class MessageServiceImpl implements MessageService {
 
         messageRepository.setMessagesToSeenByChat(MessageState.SEEN.name(), recipientId);
 
-        //TODO: notification
+        Notification notification = Notification.builder()
+                .chatId(chat.getId())
+                .senderId(getSenderId(chat, authentication))
+                .receiverId(recipientId)
+                .notificationType(NotificationType.SEEN)
+                .build();
+
+        notificationService.sendNotification(recipientId, notification);
     }
 
     @Transactional
@@ -93,7 +114,16 @@ public class MessageServiceImpl implements MessageService {
 
         messageRepository.save(message);
 
-        //TODO: notification
+        Notification notification = Notification.builder()
+                .chatId(chat.getId())
+                .messageType(MessageType.IMAGE)
+                .senderId(senderId)
+                .receiverId(recipientId)
+                .media(FileUtils.readFileFromLocation(filePath))
+                .notificationType(NotificationType.IMAGE)
+                .build();
+
+        notificationService.sendNotification(recipientId, notification);
     }
 
     private String getRecipientId(Chat chat, Authentication authentication) {
@@ -109,5 +139,4 @@ public class MessageServiceImpl implements MessageService {
         }
         return chat.getRecipient().getId();
     }
-
 }

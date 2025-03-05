@@ -3,6 +3,7 @@ package dev.marvin.api;
 import dev.marvin.business.ChatService;
 import dev.marvin.domain.response.ChatResponse;
 import dev.marvin.domain.response.ResponseDTO;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ import java.util.List;
 @RequestMapping("/api/v1/chats")
 @RequiredArgsConstructor
 @Slf4j
+@Tag(name = "Chat Resource")
 public class ChatController {
     private final ChatService chatService;
 

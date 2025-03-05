@@ -31,3 +31,6 @@ application:
     uploads:
       media-output: ./uploads
 
+springdoc:
+  default-produces-media-type: application/json
+

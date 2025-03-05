@@ -4,6 +4,7 @@ import dev.marvin.business.MessageService;
 import dev.marvin.domain.request.MessageRequest;
 import dev.marvin.domain.response.MessageResponse;
 import dev.marvin.domain.response.ResponseDTO;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,7 @@ import java.util.List;
 @RequestMapping("/api/v1/messages")
 @RequiredArgsConstructor
 @Slf4j
+@Tag(name = "Message Resource")
 public class MessageController {
     private final MessageService messageService;
 
